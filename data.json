@@ -27,28 +27,23 @@
     "projects": [
         {
             "title": "KinoKlicker 🎬👆",
-            "href": "https://kino-klicker.vercel.app/",
-            "image": "/linkedin.svg"
+            "href": "https://kino-klicker.vercel.app/"
         },
         {
             "title": "Calculator Emporium 🧮",
-            "href": "https://colemilne54.github.io/Calculator-Emporium/",
-            "image": "/github.svg"
+            "href": "https://colemilne54.github.io/Calculator-Emporium/"
         },
         {
             "title": "DogDiscover 🐶🔍",
-            "href": "https://react-nrhvby.stackblitz.io/",
-            "image": "/threejs.svg"
+            "href": "https://react-nrhvby.stackblitz.io/"
         },
         {
             "title": "Infuriating Notepad 😡📝",
-            "href": "https://react-hjyehn.stackblitz.io",
-            "image": "/empire.svg"
+            "href": "https://react-hjyehn.stackblitz.io"
         },
         {
             "title": "Art Institute of Chicago Random Digital Museum 🖼",
-            "href": "https://react-gmg2ge.stackblitz.io",
-            "image": "/empire.svg"
+            "href": "https://react-gmg2ge.stackblitz.io"
         }
     ]
 }

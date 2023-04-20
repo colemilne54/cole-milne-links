@@ -46,6 +46,10 @@ export default function Home() {
       {data.links.map((link) => (
         <LinkCard key={link.href} {...link} />
       ))}
+      <h2 className='font-bold mt-4 mb-8 text-xl text-white'>Projects</h2>
+      {data.projects.map((link) => (
+        <LinkCard key={link.href} {...link} />
+      ))}
     </div>
   );
 }
