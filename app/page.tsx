@@ -1,56 +1,6 @@
 import Image from 'next/image'
 // import data from '/data.json'
-
-const data = 
-{
-  "name": "Cole Milne",
-  "alt": "Cole Milne headshot image",
-  "avatar": "https://avatars.githubusercontent.com/u/20178496?v=4",
-  "links": [
-      {
-          "title": "LinkedIn",
-          "href": "https://www.linkedin.com/in/colemilne/",
-          "image": "/linkedin.svg"
-      },
-      {
-          "title": "GitHub",
-          "href": "https://www.github.com/colemilne54",
-          "image": "/github.svg"
-      },
-      {
-          "title": "3D Resume",
-          "href": "https://colemilne54.github.io/fireship-threejs/",
-          "image": "/threejs.svg"
-      },
-      {
-          "title": "The Milne Empire",
-          "href": "https://themilneempire.com/",
-          "image": "/empire.svg"
-      }
-  ],
-  "projects": [
-      {
-          "title": "KinoKlicker 🎬👆",
-          "href": "https://kino-klicker.vercel.app/"
-      },
-      {
-          "title": "Calculator Emporium 🧮",
-          "href": "https://colemilne54.github.io/Calculator-Emporium/"
-      },
-      {
-          "title": "DogDiscover 🐶🔍",
-          "href": "https://react-nrhvby.stackblitz.io/"
-      },
-      {
-          "title": "Infuriating Notepad 😡📝",
-          "href": "https://react-hjyehn.stackblitz.io"
-      },
-      {
-          "title": "Art Institute of Chicago Random Digital Museum 🖼",
-          "href": "https://react-gmg2ge.stackblitz.io"
-      }
-  ]
-}
+import { get } from '@vercel/edge-config';
 
 function LinkCard({ 
   title, 
@@ -82,7 +32,35 @@ function LinkCard({
   )
 }
 
-export default function Home() {
+interface Data {
+  name: string;
+  alt: string;
+  avatar: string;
+  links: Link[];
+  // socials: Social[];
+  projects: Project[];
+}
+
+interface Link {
+  href: string;
+  title: string;
+  image?: string;
+}
+
+// interface Social {
+//   href: string;
+//   title: string;
+//   image?: string;
+// }
+
+interface Project {
+  title: string;
+  href: string;
+}
+
+export default async function Home() {
+  const data: Data = await get('data') as Data;
+
   return (
     <div className="flex flex-col items-center mx-auto w-full 
     justify-center mt-16 px-8">
