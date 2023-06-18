@@ -2,7 +2,6 @@ import Image from 'next/image'
 import { get } from '@vercel/edge-config';
 import { redirect } from 'next/navigation';
 
-
 function LinkCard({ 
   title, 
   href,
@@ -71,11 +70,11 @@ export default async function Home() {
         priority
       />
       <h1 className='font-bold mt-4 mb-8 text-xl text-white'>{data.name}</h1>
-      {data.links.map((link: Link) => (
+      {data.links.map((link) => (
         <LinkCard key={link.href} {...link} />
       ))}
       <h2 className='font-bold mt-4 mb-8 text-xl text-white'>Projects</h2>
-      {data.projects.map((project: Project) => (
+      {data.projects.map((project) => (
         <LinkCard key={project.href} {...project} />
       ))}
     </div>
