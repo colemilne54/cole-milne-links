@@ -1,6 +1,7 @@
 import Image from 'next/image'
-// import data from '/data.json'
 import { get } from '@vercel/edge-config';
+import { redirect } from 'next/navigation';
+
 
 function LinkCard({ 
   title, 
@@ -37,7 +38,6 @@ interface Data {
   alt: string;
   avatar: string;
   links: Link[];
-  // socials: Social[];
   projects: Project[];
 }
 
@@ -47,12 +47,6 @@ interface Link {
   image?: string;
 }
 
-// interface Social {
-//   href: string;
-//   title: string;
-//   image?: string;
-// }
-
 interface Project {
   title: string;
   href: string;
@@ -60,6 +54,10 @@ interface Project {
 
 export default async function Home() {
   const data: Data = await get('data') as Data;
+
+  if (!data) {
+    redirect('https://colemilne.com/')
+  }
 
   return (
     <div className="flex flex-col items-center mx-auto w-full 
@@ -73,12 +71,12 @@ export default async function Home() {
         priority
       />
       <h1 className='font-bold mt-4 mb-8 text-xl text-white'>{data.name}</h1>
-      {data.links.map((link) => (
+      {data.links.map((link: Link) => (
         <LinkCard key={link.href} {...link} />
       ))}
       <h2 className='font-bold mt-4 mb-8 text-xl text-white'>Projects</h2>
-      {data.projects.map((link) => (
-        <LinkCard key={link.href} {...link} />
+      {data.projects.map((project: Project) => (
+        <LinkCard key={project.href} {...project} />
       ))}
     </div>
   );
