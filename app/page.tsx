@@ -30,6 +30,10 @@ const data =
   ],
   "projects": [
       {
+        "title": "GetSendy Media Form App 🎬👆",
+        "href": "https://kino-klicker.vercel.app/"
+      },
+      {
           "title": "KinoKlicker 🎬👆",
           "href": "https://kino-klicker.vercel.app/"
       },
