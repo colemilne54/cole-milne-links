@@ -30,8 +30,12 @@ const data =
   ],
   "projects": [
       {
-        "title": "GetSendy Media Form App 🎬🤳",
-        "href": "https://app.getsendymedia.com/forms/get-sendy"
+          "title": "TrackMyApps.io 📝💸",
+          "href": "https://trackmyapps.io/"    
+      },
+      {
+          "title": "GetSendy Media Form App 🎬🤳",
+          "href": "https://app.getsendymedia.com/forms/get-sendy"
       },
       {
           "title": "KinoKlicker 🎬👆",
