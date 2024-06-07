@@ -42,6 +42,10 @@ const data =
           "href": "https://kino-klicker.vercel.app/"
       },
       {
+          "title": "Laundry Care Symbols 🧺🫧",
+          "href": "https://colemilne54.github.io/laundry-care-symbols/"
+      },
+      {
           "title": "Calculator Emporium 🧮",
           "href": "https://colemilne54.github.io/Calculator-Emporium/"
       },
