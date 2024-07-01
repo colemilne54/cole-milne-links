@@ -38,6 +38,10 @@ const data =
           "href": "https://app.getsendymedia.com/forms/get-sendy"
       },
       {
+          "title": "Holistic Haven 🥊🧘‍🌎🐓",
+          "href": "https://holistic-haven.colemilne.com/"
+      },
+      {
           "title": "KinoKlicker 🎬👆",
           "href": "https://kino-klicker.vercel.app/"
       },
