@@ -18,9 +18,10 @@ const data =
           "image": "/github.svg"
       },
       {
-          "title": "3D Resume",
+          "title": "3D Resume (Outdated content, but still worth a look)",
           "href": "https://colemilne54.github.io/fireship-threejs/",
-          "image": "/threejs.svg"
+          "image": "/threejs.svg",
+          "classes": "px-12"
       },
       {
           "title": "The Milne Empire",
@@ -69,17 +70,18 @@ const data =
 }
 
 function LinkCard({ 
-  title, 
-  href,
-  image 
+   title,
+   href,
+   image,
+   classes
 } : {
-  title: string, 
-  href: string, 
-  image?: string 
+   title: string,
+   href: string,
+   image?: string
+   classes?: string
 }) {
   return (
-    <a href={href} className='flex items-center p-1 w-full rounded-md
-    hover:scale-105 transition-all border bg-gray-100 mb-3 max-w-3xl'>
+    <a href={href} className='flex items-center p-1 w-full rounded-md hover:scale-105 transition-all border bg-gray-100 mb-3 max-w-3xl'>
       <div className="flex text-center w-full">
         <div className='w-10 h-10'>
           {image && (
@@ -92,7 +94,7 @@ function LinkCard({
             />
           )}
         </div>
-        <h2 className='flex justify-center items-center font-semibold w-full text-gray-700 -ml-10'>{title}</h2>
+        <h2 className={`flex justify-center items-center font-semibold w-full text-gray-700 -ml-10 ${classes}`}>{title}</h2>
       </div>
     </a>
   )
