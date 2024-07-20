@@ -27,6 +27,11 @@ const data =
           "title": "The Milne Empire",
           "href": "https://themilneempire.com/",
           "image": "/empire.svg"
+      },
+      {
+        "title": "Resume/ Portfolio (Bento UI Style)",
+        "href": "https://bento.colemilne.com/",
+        "image": "/bento.webp"
       }
   ],
   "projects": [
