@@ -1,4 +1,5 @@
 import './globals.css'
+import { GoogleTagManager } from "@next/third-parties/google";
 
 export const metadata = {
   title: 'Cole Milne Links',
@@ -12,6 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <GoogleTagManager gtmId={'G-Q517XP6HKT'} />
       <body>{children}</body>
     </html>
   )
