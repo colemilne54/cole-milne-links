@@ -35,12 +35,6 @@ const data: PortfolioData = {
          "image": "/github.svg"
       },
       {
-         "title": "3D Resume (Outdated content, but still worth a look)",
-         "href": "https://colemilne54.github.io/fireship-threejs/",
-         "image": "/threejs.svg",
-         "classes": "px-12"
-      },
-      {
          "title": "The Milne Empire",
          "href": "https://themilneempire.com/",
          "image": "/empire.svg"
@@ -49,7 +43,13 @@ const data: PortfolioData = {
          "title": "Resume/ Portfolio (Bento UI Style)",
          "href": "https://bento.colemilne.com/",
          "image": "/bento.webp"
-      }
+      },
+      {
+         "title": "3D Resume (Outdated content, but still worth a look)",
+         "href": "https://colemilne54.github.io/fireship-threejs/",
+         "image": "/threejs.svg",
+         "classes": "px-12"
+      },
    ],
    "projects": [
       {
