@@ -1,6 +1,26 @@
 import Image from 'next/image'
 import data from '../data/data'
 
+function InfoTooltip() {
+   return (
+      <div className="relative group mb-3">
+         <div className="cursor-pointer text-gray-500 hover:text-gray-700">
+            <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <circle cx="12" cy="12" r="10" stroke="#FFFFFF" stroke-width="1.5"/>
+               <path d="M12 17V11" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+               <circle cx="1" cy="1" r="1" transform="matrix(1 0 0 -1 11 9)" fill="#FFFFFF"/>
+            </svg>
+         </div>
+
+         <div
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-96">
+            <div className="text-center">The projects showcased here represent a selection of my personal side work and explorations. While many of my professional and client projects are protected under NDAs, I'm happy to provide detailed walkthroughs or demos of relevant work during our discussions as needed.</div>
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"/>
+         </div>
+      </div>
+   );
+};
+
 
 function LinkCard({title, href, image, classes}: { title: string, href: string, image?: string, classes?: string }) {
    return (
@@ -43,7 +63,10 @@ export default function Home() {
          {data.links.map((link) => (
             <LinkCard key={link.href} {...link} />
          ))}
-         <h2 className='font-bold mt-4 mb-8 text-xl text-white'>Projects</h2>
+         <h2 className='font-bold mt-4 mb-2 text-xl text-white'>
+            Projects
+         </h2>
+         <InfoTooltip />
          {data.projects.map((link) => (
             <LinkCard key={link.href} {...link} />
          ))}
