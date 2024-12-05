@@ -57,12 +57,12 @@ const data: PortfolioData = {
          "href": "https://trackmyapps.io/"
       },
       {
-         "title": "GetSendy Media Form App 🎬🤳",
-         "href": "https://app.getsendymedia.com/forms/get-sendy"
-      },
-      {
          "title": "Holistic Haven 🥊🧘‍🌎🐓",
          "href": "https://holistic-haven.colemilne.com/"
+      },
+      {
+         "title": "Table Talk (Dinner Conversation Cards) 🍽️🗣️🃏",
+         "href": "https://colemilne54.github.io/tabletalk/"
       },
       {
          "title": "KinoKlicker 🎬👆",
@@ -75,6 +75,10 @@ const data: PortfolioData = {
       {
          "title": "Calculator Emporium 🧮",
          "href": "https://colemilne54.github.io/Calculator-Emporium/"
+      },
+      {
+         "title": "GetSendy Media Form App 🎬🤳",
+         "href": "https://app.getsendymedia.com/forms/get-sendy"
       },
       {
          "title": "DogDiscover 🐶🔍",
