@@ -65,6 +65,10 @@ const data: PortfolioData = {
          "href": "https://colemilne54.github.io/tabletalk/"
       },
       {
+         "title": "Wordle Solver 📖🕵🏻‍♂️",
+         "href": "https://colemilne54.github.io/nextjs-wordle-solver/"
+      },
+      {
          "title": "KinoKlicker 🎬👆",
          "href": "https://kino-klicker.vercel.app/"
       },
