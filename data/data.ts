@@ -69,6 +69,10 @@ const data: PortfolioData = {
          "href": "https://colemilne54.github.io/nextjs-wordle-solver/"
       },
       {
+         "title": "Housing Cost Calculator 🏠💵",
+         "href": "https://colemilne54.github.io/housing-cost-calculator/"
+      },
+      {
          "title": "KinoKlicker 🎬👆",
          "href": "https://kino-klicker.vercel.app/"
       },
