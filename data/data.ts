@@ -52,6 +52,10 @@ const data: PortfolioData = {
       },
    ],
    "projects": [
+	{
+		"title": "FighterLinks 🥊🥋🔗",
+		"href": "https://fighterlinks.com"
+	},
       {
          "title": "TrackMyApps.io 📝💸",
          "href": "https://trackmyapps.io/"
