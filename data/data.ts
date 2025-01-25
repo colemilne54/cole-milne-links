@@ -52,13 +52,17 @@ const data: PortfolioData = {
       },
    ],
    "projects": [
-	{
-		"title": "FighterLinks 🥊🥋🔗",
-		"href": "https://fighterlinks.com"
-	},
+      {
+         "title": "FighterLinks 🥊🥋🔗",
+         "href": "https://fighterlinks.com"
+      },
       {
          "title": "TrackMyApps.io 📝💸",
          "href": "https://trackmyapps.io/"
+      },
+      {
+         "title": "Poof! Ephermeral Art Gallery 👻🖼️⏳",
+         "href": "https://poof.colemilne.com"
       },
       {
          "title": "Holistic Haven 🥊🧘‍🌎🐓",
