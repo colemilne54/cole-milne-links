@@ -1,4 +1,6 @@
-import React from 'react';
+'use client'
+
+import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
 import data from '../data/data'
 import { Info } from 'lucide-react';
@@ -71,6 +73,40 @@ function LinkCard({ title, href, image, classes }: { title: string, href: string
 }
 
 export default function Home() {
+   const [konami, setKonami] = useState([]);
+   const [clickCount, setClickCount] = useState(0);
+   const [easterEggFound, setEasterEggFound] = useState(false);
+
+   useEffect(() => {
+      const konamiCode = [
+         'ArrowUp', 'ArrowUp',
+         'ArrowDown', 'ArrowDown',
+         'ArrowLeft', 'ArrowRight',
+         'ArrowLeft', 'ArrowRight',
+         'b', 'a'
+      ];
+
+      const handleKeyDown = (e: { key: any; }) => {
+         const newKonami = [...konami, e.key];
+         if (newKonami.length > konamiCode.length) {
+            newKonami.shift();
+         }
+         // @ts-ignore
+         setKonami(newKonami);
+
+         if (JSON.stringify(newKonami) === JSON.stringify(konamiCode)) {
+            setEasterEggFound(true);
+            document.body.style.background = 'linear-gradient(45deg, #ff6b6b, #4ecdc4)';
+            setTimeout(() => {
+               document.body.style.background = '';
+            }, 3000);
+         }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+   }, [konami]);
+
 
    return (
       // <div className="min-h-screen bg-[#eee8d5]" style={{
@@ -100,11 +136,25 @@ export default function Home() {
                </div>
             </div>
 
-            <h1 className="font-semibold mb-8 text-2xl text-[#002b36]">
+            <h1 className="font-semibold text-2xl text-[#002b36] cursor-pointer"
+                onClick={() => setClickCount(prev => prev + 1)}>
                {data.name}
+               {clickCount > 0 && clickCount < 5 && (<span className="ml-2 text-sm text-gray-400 hover:text-gray-800">(click me!)</span>)}
             </h1>
 
-            <div className="w-full max-w-2xl">
+            {clickCount > 0 && clickCount < 5 && (
+               <p className="text-sm text-[#657b83] mt-4 animate-bounce">
+                  Keep clicking! ({5 - clickCount} more to go)
+               </p>
+            )}
+
+            {clickCount >= 5 && (
+               <p className="text-sm text-[#657b83] mt-4 font-bold">
+                  Achievement unlocked! Now try the Konami code: ↑↑↓↓←→←→BA
+               </p>
+            )}
+
+            <div className="w-full max-w-2xl mt-8">
                {data.links.map((link) => (
                   <LinkCard key={link.href} {...link} />
                ))}
@@ -122,6 +172,12 @@ export default function Home() {
                ))}
             </div>
          </div>
+
+         {easterEggFound && (
+            <div className="fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded-full animate-bounce">
+               🎉 Konami Code Found!
+            </div>
+         )}
       </div>
    );
 };
