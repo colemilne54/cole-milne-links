@@ -43,13 +43,13 @@ function LinkCard({ title, href, image, classes }: { title: string, href: string
    return (
       <a
          href={href}
-         className="flex items-center w-full rounded-lg hover:scale-102 transition-all border border-[#eee8d5] mb-4 max-w-2xl bg-[#fdf6e3] hover:bg-[#eee8d5] shadow-sm hover:shadow-md p-3 group"
+         className="block w-full rounded-lg hover:scale-102 transition-all border border-[#eee8d5] mb-4 max-w-2xl bg-[#fdf6e3] hover:bg-[#eee8d5] shadow-sm hover:shadow-md p-3 group"
          style={{
             boxShadow: '0 2px 4px rgba(0, 43, 54, 0.05)'
          }}
       >
-         <div className="flex items-center w-full">
-            <div className="w-10 h-10 flex-shrink-0">
+         <div className="grid grid-cols-[40px_1fr_40px] items-center w-full">
+            <div className="w-10 h-10">
                {image && (
                   <Image
                      unoptimized
@@ -61,9 +61,10 @@ function LinkCard({ title, href, image, classes }: { title: string, href: string
                   />
                )}
             </div>
-            <h2 className={`flex justify-center items-center font-medium w-full text-[#657b83] group-hover:text-[#586e75] transition-colors ${classes}`}>
+            <h2 className={`text-center font-medium text-[#657b83] group-hover:text-[#586e75] transition-colors ${classes}`}>
                {title}
             </h2>
+            <div /> {/* Empty div for the third column to maintain symmetry */}
          </div>
       </a>
    );
