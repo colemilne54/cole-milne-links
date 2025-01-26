@@ -4,6 +4,8 @@ import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
 import data from '../data/data'
 import {Info} from 'lucide-react';
+import SVGIconWrapper from "@/components/SVGIconWrapper";
+import {Icon} from "@iconify/react";
 
 // Solarized Light color palette
 const lightTheme = {
@@ -65,10 +67,10 @@ function InfoTooltip({easterEggFound}: { easterEggFound: boolean }) {
    );
 }
 
-function LinkCard({title, href, image, classes, easterEggFound}: {
+function LinkCard({title, href, icon, classes, easterEggFound}: {
    title: string,
    href: string,
-   image?: string,
+   icon?: string,
    classes?: string,
    easterEggFound: boolean
 }) {
@@ -88,15 +90,8 @@ function LinkCard({title, href, image, classes, easterEggFound}: {
       >
          <div className="grid grid-cols-[40px_1fr_40px] items-center w-full">
             <div className="w-10 h-10">
-               {image && (
-                  <Image
-                     unoptimized
-                     className={`rounded-md ${easterEggFound ? 'opacity-80 grayscale' : ''}`}
-                     alt={title}
-                     src={image}
-                     width={40}
-                     height={40}
-                  />
+               {icon && (
+                  <Icon icon={icon} height={40} width={40} className={`rounded-md ${easterEggFound ? 'text-[#00ff00]' : ''}`} />
                )}
             </div>
             <h2 className={`text-center font-medium transition-colors ${

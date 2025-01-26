@@ -1,7 +1,7 @@
 interface Link {
    title: string;
    href: string;
-   image: string;
+   icon: string;
    classes?: string;
 }
 
@@ -27,28 +27,28 @@ const data: PortfolioData = {
       {
          "title": "LinkedIn",
          "href": "https://www.linkedin.com/in/colemilne/",
-         "image": "/linkedin.svg"
+         "icon": "mdi:linkedin"
       },
       {
          "title": "GitHub",
          "href": "https://www.github.com/colemilne54",
-         "image": "/github.svg"
+         "icon": "mdi:github"
       },
       {
          "title": "The Milne Empire",
          "href": "https://themilneempire.com/",
-         "image": "/empire.svg"
+         "icon": "mdi:pillar"
       },
       {
          "title": "Resume/ Portfolio (Bento UI Style)",
          "href": "https://bento.colemilne.com/",
-         "image": "/bento.webp"
+         "icon": "simple-icons:bento"
       },
       {
          "title": "3D Resume (Outdated content, but still worth a look)",
          "href": "https://colemilne54.github.io/fireship-threejs/",
-         "image": "/threejs.svg",
-         "classes": "px-12"
+         "icon": "devicon:threejs",
+         // "classes": "px-12"
       },
    ],
    "projects": [
