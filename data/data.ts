@@ -47,8 +47,7 @@ const data: PortfolioData = {
       {
          "title": "3D Resume (Outdated content, but still worth a look)",
          "href": "https://colemilne54.github.io/fireship-threejs/",
-         "icon": "devicon:threejs",
-         // "classes": "px-12"
+         "icon": "devicon:threejs"
       },
    ],
    "projects": [

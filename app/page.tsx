@@ -4,7 +4,6 @@ import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
 import data from '../data/data'
 import {Info} from 'lucide-react';
-import SVGIconWrapper from "@/components/SVGIconWrapper";
 import {Icon} from "@iconify/react";
 
 // Solarized Light color palette
