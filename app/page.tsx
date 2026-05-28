@@ -1,235 +1,358 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Image from 'next/image';
-import data from '../data/data'
-import {Info} from 'lucide-react';
-import {Icon} from "@iconify/react";
+import Link from 'next/link';
+import {Icon} from '@iconify/react';
+import data from '../data/data';
 
-// Solarized Light color palette
-const lightTheme = {
-   base03: '#002b36',
-   base02: '#073642',
-   base01: '#586e75',
-   base00: '#657b83',
-   base0: '#839496',
-   base1: '#93a1a1',
-   base2: '#eee8d5',
-   base3: '#fdf6e3',
-   yellow: '#b58900',
-   orange: '#cb4b16',
-   red: '#dc322f',
-   magenta: '#d33682',
-   violet: '#6c71c4',
-   blue: '#268bd2',
-   cyan: '#2aa198',
-   green: '#859900'
-};
+type AudioCtor = typeof AudioContext;
 
-// Terminal theme colors
-const terminalTheme = {
-   background: '#000000',
-   text: '#00ff00',
-   dimText: '#00cc00',
-   border: '#004400',
-   hover: '#001100',
-   shadow: '0 0 10px rgba(0, 255, 0, 0.2)'
-};
+function playPageTurnSound() {
+   try {
+      const Ctor: AudioCtor | undefined =
+         window.AudioContext ||
+         (window as unknown as {webkitAudioContext: AudioCtor}).webkitAudioContext;
+      if (!Ctor) return;
+      const ctx = new Ctor();
+      const duration = 0.55;
+      const bufferSize = Math.floor(ctx.sampleRate * duration);
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const ch = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+         const t = i / bufferSize;
+         const attack = t < 0.04 ? t / 0.04 : 1;
+         const decay = Math.pow(1 - t, 2.2);
+         const swish = 0.6 + 0.4 * Math.sin(t * 18);
+         ch[i] = (Math.random() * 2 - 1) * attack * decay * swish * 0.55;
+      }
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 2800;
+      filter.Q.value = 1.2;
+      const gain = ctx.createGain();
+      gain.gain.value = 0.85;
+      source.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      source.start();
+      source.onended = () => ctx.close().catch(() => {});
 
-function InfoTooltip({easterEggFound}: { easterEggFound: boolean }) {
-   const theme = easterEggFound ? terminalTheme : lightTheme;
+      // A soft thunk an instant later: the cover hitting the table
+      const thunk = ctx.createOscillator();
+      const thunkGain = ctx.createGain();
+      thunk.type = 'sine';
+      thunk.frequency.setValueAtTime(140, ctx.currentTime + 0.02);
+      thunk.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.18);
+      thunkGain.gain.setValueAtTime(0.0001, ctx.currentTime + 0.02);
+      thunkGain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.05);
+      thunkGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.32);
+      thunk.connect(thunkGain).connect(ctx.destination);
+      thunk.start(ctx.currentTime + 0.02);
+      thunk.stop(ctx.currentTime + 0.34);
+   } catch {
+      // sound is a nice-to-have; never break the page over it
+   }
+}
+
+function ClosedBook({onOpen}: {onOpen: () => void}) {
+   const [opening, setOpening] = useState(false);
+
+   const handleOpen = useCallback(() => {
+      if (opening) return;
+      setOpening(true);
+      playPageTurnSound();
+      window.setTimeout(onOpen, 950);
+   }, [opening, onOpen]);
+
+   const handleKey = useCallback(
+      (e: React.KeyboardEvent) => {
+         if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleOpen();
+         }
+      },
+      [handleOpen]
+   );
 
    return (
-      <div className="relative group mb-6">
-         <div
-            className={`cursor-pointer transition-colors ${easterEggFound ? 'text-[#00ff00]' : 'text-[#586e75] hover:text-[#073642]'}`}>
-            <Info size={20}/>
+      <div className="scene flex flex-col items-center justify-center min-h-screen px-4">
+         <div className="relative" style={{paddingBottom: 80}}>
+            <button
+               type="button"
+               onClick={handleOpen}
+               onKeyDown={handleKey}
+               aria-label="Open the book to see the table of contents"
+               className={`book-3d ${opening ? 'is-opening' : ''}`}
+            >
+               {/* Page slices for depth */}
+               <div className="book-pages">
+                  {Array.from({length: 6}).map((_, i) => (
+                     <div
+                        key={i}
+                        className="page-slice book-face"
+                        style={{
+                           transform: `translateZ(${14 - i * 5}px)`,
+                           opacity: 0.95,
+                        }}
+                     />
+                  ))}
+               </div>
+               <div className="cover-back book-face" />
+               <div className="spine book-face" />
+               <div className="page-edge-right book-face" />
+               <div className="page-edge-top book-face" />
+               <div className="page-edge-bottom book-face" />
+               <div className="cover-front book-face">
+                  <div className="cover-title">
+                     <div className="sub">A Personal Volume</div>
+                     <div className="rule" />
+                     <div className="name">COLE&nbsp;MILNE</div>
+                     <div className="rule" />
+                     <div className="sub">Selected Works &amp; Notes</div>
+                     <div className="crest" aria-hidden>
+                        ❦
+                     </div>
+                  </div>
+               </div>
+            </button>
+            <div className="book-shadow" aria-hidden />
          </div>
-         <div
-            className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-3 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-96 border ${
-               easterEggFound
-                  ? 'bg-black text-[#00ff00] border-[#004400]'
-                  : 'bg-[#fdf6e3] text-[#657b83] border-[#eee8d5]'
-            }`}>
-            <div className={`text-center leading-relaxed ${easterEggFound ? 'font-mono' : ''}`}>
-               The projects showcased here represent a selection of my personal side work and explorations. While many
-               of my professional and client projects are protected under NDAs, I'm happy to provide detailed
-               walkthroughs or demos of relevant work during our discussions as needed.
-            </div>
-            <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 border-b border-r rotate-45 ${
-               easterEggFound
-                  ? 'bg-black border-[#004400]'
-                  : 'bg-[#fdf6e3] border-[#eee8d5]'
-            }`}/>
+         <p className="book-hint">
+            <span className="pulse">Click the book to open</span>
+         </p>
+      </div>
+   );
+}
+
+function OpenSpread({onClose}: {onClose: () => void}) {
+   const closeRef = useRef<HTMLButtonElement>(null);
+   useEffect(() => {
+      closeRef.current?.focus();
+   }, []);
+
+   return (
+      <div className="min-h-screen flex flex-col justify-center py-10">
+         <button
+            ref={closeRef}
+            className="close-book"
+            onClick={() => {
+               playPageTurnSound();
+               onClose();
+            }}
+            aria-label="Close the book"
+         >
+            ✕ Close the book
+         </button>
+
+         <div className="spread parchment" role="region" aria-label="Table of contents">
+            <div className="parchment-fibers" style={{position: 'absolute', inset: 0, pointerEvents: 'none'}} />
+            <div className="ribbon" aria-hidden />
+
+            {/* LEFT PAGE — bio / frontispiece */}
+            <article className="page page-left parchment" aria-label="About">
+               <div className="chapter-eyebrow">Frontispiece</div>
+               <h1 className="chapter-title">{data.name}</h1>
+               <div className="chapter-rule" />
+
+               <div className="prose-book">
+                  {data.bio.map((para, idx) => (
+                     <p key={idx}>{para}</p>
+                  ))}
+               </div>
+
+               <div className="author-card">
+                  <div className="avatar">
+                     <Image
+                        unoptimized
+                        alt={data.alt}
+                        src={data.avatar}
+                        width={72}
+                        height={72}
+                        priority
+                     />
+                  </div>
+                  <div className="meta">
+                     <strong>{data.role}</strong>
+                     <br />
+                     {data.location} · open to contract &amp; full-time
+                     <br />
+                     <a href={`mailto:${data.email}`} style={{color: 'var(--leather)'}}>
+                        {data.email}
+                     </a>
+                  </div>
+               </div>
+
+               <div className="section-heading">Areas of practice</div>
+               <div className="skills-list" aria-label="Skills">
+                  {data.skills.map((s) => (
+                     <span key={s}>{s}</span>
+                  ))}
+               </div>
+
+               <div className="page-number">i</div>
+            </article>
+
+            {/* RIGHT PAGE — table of contents */}
+            <article className="page page-right parchment" aria-label="Table of contents">
+               <div className="chapter-eyebrow">Volume I</div>
+               <h2 className="chapter-title">Table of Contents</h2>
+               <div className="chapter-rule" />
+
+               <div className="section-heading">Where to find me</div>
+               <TocList items={data.links} startPage={3} />
+
+               <div className="section-heading">Selected Projects</div>
+               <TocList
+                  items={data.projects.map((p) => ({
+                     ...p,
+                     icon: '',
+                     external: true,
+                  }))}
+                  startPage={3 + data.links.length}
+                  compact
+               />
+
+               <p
+                  style={{
+                     marginTop: 22,
+                     fontStyle: 'italic',
+                     color: 'var(--ink-soft)',
+                     fontSize: 13,
+                     lineHeight: 1.6,
+                  }}
+               >
+                  Many of my professional engagements are under NDA. I'm happy to
+                  walk through relevant work in detail during a conversation.
+               </p>
+
+               <div className="page-number">ii</div>
+            </article>
          </div>
       </div>
    );
 }
 
-function LinkCard({title, href, icon, classes, easterEggFound}: {
-   title: string,
-   href: string,
-   icon?: string,
-   classes?: string,
-   easterEggFound: boolean
+function TocList({
+   items,
+   startPage,
+   compact = false,
+}: {
+   items: Array<{
+      title: string;
+      href: string;
+      icon?: string;
+      subtitle?: string;
+      external?: boolean;
+   }>;
+   startPage: number;
+   compact?: boolean;
 }) {
-   const theme = easterEggFound ? terminalTheme : lightTheme;
-
    return (
-      <a
-         href={href}
-         className={`block w-full rounded-lg hover:scale-102 transition-all mb-4 max-w-2xl shadow-sm hover:shadow-md p-3 group ${
-            easterEggFound
-               ? 'bg-black border border-[#004400] hover:bg-[#001100]'
-               : 'bg-[#fdf6e3] border border-[#eee8d5] hover:bg-[#eee8d5]'
-         }`}
-         style={{
-            boxShadow: easterEggFound ? '0 0 10px rgba(0, 255, 0, 0.2)' : '0 2px 4px rgba(0, 43, 54, 0.05)'
-         }}
-      >
-         <div className="grid grid-cols-[40px_1fr_40px] items-center w-full">
-            <div className="w-10 h-10">
-               {icon && (
-                  <Icon icon={icon} height={40} width={40} className={`rounded-md ${easterEggFound ? 'text-[#00ff00]' : ''}`} />
-               )}
-            </div>
-            <h2 className={`text-center font-medium transition-colors ${
-               easterEggFound
-                  ? 'text-[#00ff00] font-mono'
-                  : 'text-[#657b83] group-hover:text-[#586e75]'
-            } ${classes}`}>
-               {title}
-            </h2>
-            <div/>
-         </div>
-      </a>
+      <ul className="toc">
+         {items.map((item, idx) => {
+            const pageNo = startPage + idx;
+            const isExternal = item.external !== false && /^https?:/i.test(item.href);
+            const inner = (
+               <>
+                  <span className="toc-title">
+                     {item.icon ? (
+                        <Icon
+                           icon={item.icon}
+                           width={18}
+                           height={18}
+                           aria-hidden
+                        />
+                     ) : null}
+                     {item.title}
+                     {isExternal ? <span className="ext-mark"> ↗</span> : null}
+                     {!compact && item.subtitle ? (
+                        <span className="toc-sub">{item.subtitle}</span>
+                     ) : null}
+                  </span>
+                  <span className="page-no">
+                     <span className="dots">· · · · · · · </span>
+                     {String(pageNo).padStart(2, '0')}
+                  </span>
+               </>
+            );
+            return (
+               <li key={item.href}>
+                  {isExternal ? (
+                     <a href={item.href} target="_blank" rel="noopener noreferrer">
+                        {inner}
+                     </a>
+                  ) : (
+                     <Link href={item.href}>{inner}</Link>
+                  )}
+               </li>
+            );
+         })}
+      </ul>
    );
 }
 
 export default function Home() {
-   const [konami, setKonami] = useState([]);
-   const [clickCount, setClickCount] = useState(0);
-   const [easterEggFound, setEasterEggFound] = useState(false);
+   const [opened, setOpened] = useState(false);
 
    useEffect(() => {
-      const konamiCode = [
-         'ArrowUp', 'ArrowUp',
-         'ArrowDown', 'ArrowDown',
-         'ArrowLeft', 'ArrowRight',
-         'ArrowLeft', 'ArrowRight',
-         'b', 'a'
-      ];
-
-      const handleKeyDown = (e: { key: any; }) => {
-         const newKonami = [...konami, e.key];
-         if (newKonami.length > konamiCode.length) {
-            newKonami.shift();
-         }
-         // @ts-ignore
-         setKonami(newKonami);
-
-         if (JSON.stringify(newKonami) === JSON.stringify(konamiCode)) {
-            setEasterEggFound(true);
-         }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-      return () => window.removeEventListener('keydown', handleKeyDown);
-   }, [konami]);
+      // If the user lands with a hash like #contents, open straight in
+      if (typeof window !== 'undefined' && window.location.hash === '#contents') {
+         setOpened(true);
+      }
+   }, []);
 
    return (
-      <div className={`min-h-screen transition-all duration-500 ${
-         easterEggFound
-            ? 'bg-black'
-            : 'bg-[rgb(235,230,219)] bg-grain'
-      }`}
-           style={{
-              backgroundImage: easterEggFound ? 'none' : 'url(/noise.png)',
-              backgroundSize: '1440px auto'
-           }}>
-         <div className="flex flex-col items-center mx-auto w-full justify-center pt-16 px-6 pb-16">
-            <div className="mb-8 relative">
-               <div className={`w-24 h-24 rounded-full overflow-hidden border-4 shadow-lg ${
-                  easterEggFound
-                     ? 'border-[#004400]'
-                     : 'border-[#fdf6e3]'
-               }`}
-                    style={{
-                       boxShadow: easterEggFound ? '0 0 10px rgba(0, 255, 0, 0.2)' : '0 4px 6px rgba(0, 43, 54, 0.1)'
-                    }}>
-                  <Image
-                     unoptimized
-                     alt={data.alt}
-                     src={data.avatar}
-                     width={96}
-                     height={96}
-                     className={`object-cover ${easterEggFound ? 'grayscale brightness-75' : ''}`}
-                     priority
-                  />
-               </div>
-            </div>
+      <>
+         <div className="table-surface" aria-hidden />
 
-            <h1 className={`font-semibold text-2xl cursor-pointer ${
-               easterEggFound
-                  ? 'text-[#00ff00] font-mono'
-                  : 'text-[#002b36]'
-            }`}
-                onClick={() => setClickCount(prev => prev + 1)}>
-               {data.name}
-               {!easterEggFound && (
-                  <span className="ml-2 text-sm text-gray-400 hover:text-gray-800">(click me!)</span>
-               )}
-            </h1>
-
-            {clickCount > 0 && clickCount < 5 && (
-               <p className={`text-sm mt-4 animate-bounce ${
-                  easterEggFound
-                     ? 'text-[#00cc00] font-mono'
-                     : 'text-[#657b83]'
-               }`}>
-                  Keep clicking! ({5 - clickCount} more to go)
-               </p>
-            )}
-
-            {clickCount >= 5 && !easterEggFound && (
-               <p className={`text-sm mt-4 font-bold ${
-                  easterEggFound
-                     ? 'text-[#00ff00] font-mono'
-                     : 'text-[#657b83]'
-               }`}>
-                  Achievement unlocked! Now try the Konami code: ↑↑↓↓←→←→BA
-               </p>
-            )}
-
-            <div className="w-full max-w-2xl mt-8">
-               {data.links.map((link) => (
-                  <LinkCard key={link.href} {...link} easterEggFound={easterEggFound}/>
-               ))}
-
-               <h2 className={`font-semibold mt-8 mb-4 text-xl text-center ${
-                  easterEggFound
-                     ? 'text-[#00ff00] font-mono'
-                     : 'text-[#002b36]'
-               }`}>
-                  Projects
-               </h2>
-
-               <div className="flex justify-center">
-                  <InfoTooltip easterEggFound={easterEggFound}/>
-               </div>
-
-               {data.projects.map((link) => (
-                  <LinkCard key={link.href} {...link} easterEggFound={easterEggFound}/>
-               ))}
-            </div>
-         </div>
-
-         {easterEggFound && (
-            <div
-               className="fixed bottom-4 right-4 bg-[#001100] text-[#00ff00] px-4 py-2 rounded-full animate-bounce font-mono border border-[#004400]">
-               &gt; TERMINAL MODE ACTIVATED_
-            </div>
+         {/* Visible UI — 3D book or open spread */}
+         {opened ? (
+            <OpenSpread onClose={() => setOpened(false)} />
+         ) : (
+            <ClosedBook onOpen={() => setOpened(true)} />
          )}
-      </div>
+
+         {/* SEO content: always rendered, hidden from sighted users while
+             the book is closed but read by crawlers and screen readers. */}
+         <div className="sr-only">
+            <h1>{data.name}</h1>
+            <p>
+               {data.role}. {data.tagline}
+            </p>
+            {data.bio.map((p, i) => (
+               <p key={i}>{p}</p>
+            ))}
+            <h2>Links</h2>
+            <ul>
+               {data.links.map((l) => (
+                  <li key={l.href}>
+                     <a href={l.href}>{l.title}</a>
+                     {l.subtitle ? ` — ${l.subtitle}` : ''}
+                  </li>
+               ))}
+            </ul>
+            <h2>Projects</h2>
+            <ul>
+               {data.projects.map((p) => (
+                  <li key={p.href}>
+                     <a href={p.href}>{p.title}</a>
+                     {p.subtitle ? ` — ${p.subtitle}` : ''}
+                  </li>
+               ))}
+            </ul>
+            <h2>Skills</h2>
+            <ul>
+               {data.skills.map((s) => (
+                  <li key={s}>{s}</li>
+               ))}
+            </ul>
+            <p>
+               Contact: <a href={`mailto:${data.email}`}>{data.email}</a>
+            </p>
+         </div>
+      </>
    );
 }
