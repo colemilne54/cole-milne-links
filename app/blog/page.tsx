@@ -30,11 +30,16 @@ export default function BlogIndex() {
       <>
          <div className="table-surface" aria-hidden />
 
-         <main className="single-page parchment">
-            <div className="parchment-fibers" style={{position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: 4}} />
+         <div className="single-stage">
+         <main className="single-page paper">
             <Link href="/" className="back-link">
                ← Back to the book
             </Link>
+
+            <div className="running-head">
+               <span>Cole Milne</span>
+               <span>The Library</span>
+            </div>
 
             <header style={{marginBottom: 28}}>
                <div className="chapter-eyebrow">Volume II</div>
@@ -121,19 +126,24 @@ export default function BlogIndex() {
                ))}
             </ul>
 
+            <div className="endmark">❦</div>
             <div
                style={{
-                  marginTop: 32,
                   textAlign: 'center',
                   fontVariant: 'small-caps',
                   letterSpacing: '0.2em',
-                  fontSize: 12,
-                  color: 'var(--ink-soft)',
+                  fontSize: 11,
+                  color: 'var(--ink-faint)',
+                  marginTop: 6,
                }}
             >
-               ❦ End of shelf ❦
+               End of shelf
+            </div>
+            <div className="folio" style={{left: '50%', transform: 'translateX(-50%)'}}>
+               The Library
             </div>
          </main>
+         </div>
       </>
    );
 }

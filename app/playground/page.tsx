@@ -43,11 +43,16 @@ export default function Workshop() {
       <>
          <div className="table-surface" aria-hidden />
 
-         <main className="single-page parchment">
-            <div className="parchment-fibers" style={{position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: 4}} />
+         <div className="single-stage">
+         <main className="single-page paper">
             <Link href="/" className="back-link">
                ← Back to the book
             </Link>
+
+            <div className="running-head">
+               <span>Cole Milne</span>
+               <span>The Workshop</span>
+            </div>
 
             <header style={{marginBottom: 24}}>
                <div className="chapter-eyebrow">Appendix</div>
@@ -126,18 +131,14 @@ export default function Workshop() {
                </p>
             </section>
 
-            <div
-               style={{
-                  marginTop: 28,
-                  textAlign: 'center',
-                  color: 'var(--ink-soft)',
-                  fontSize: 16,
-               }}
-               aria-hidden
-            >
+            <div className="endmark" aria-hidden>
                ❦
             </div>
+            <div className="folio" style={{left: '50%', transform: 'translateX(-50%)'}}>
+               The Workshop
+            </div>
          </main>
+         </div>
       </>
    );
 }

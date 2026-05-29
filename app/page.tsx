@@ -40,7 +40,7 @@ function playPageTurnSound() {
       source.start();
       source.onended = () => ctx.close().catch(() => {});
 
-      // A soft thunk an instant later: the cover hitting the table
+      // A soft thunk an instant later: the cover settling open
       const thunk = ctx.createOscillator();
       const thunkGain = ctx.createGain();
       thunk.type = 'sine';
@@ -64,7 +64,7 @@ function ClosedBook({onOpen}: {onOpen: () => void}) {
       if (opening) return;
       setOpening(true);
       playPageTurnSound();
-      window.setTimeout(onOpen, 950);
+      window.setTimeout(onOpen, 980);
    }, [opening, onOpen]);
 
    const handleKey = useCallback(
@@ -79,42 +79,32 @@ function ClosedBook({onOpen}: {onOpen: () => void}) {
 
    return (
       <div className="scene flex flex-col items-center justify-center min-h-screen px-4">
-         <div className="relative" style={{paddingBottom: 80}}>
+         <div className="relative" style={{transformStyle: 'preserve-3d'}}>
             <button
                type="button"
                onClick={handleOpen}
                onKeyDown={handleKey}
                aria-label="Open the book to see the table of contents"
-               className={`book-3d ${opening ? 'is-opening' : ''}`}
+               className={`book ${opening ? 'is-opening' : ''}`}
             >
-               {/* Page slices for depth */}
-               <div className="book-pages">
-                  {Array.from({length: 6}).map((_, i) => (
-                     <div
-                        key={i}
-                        className="page-slice book-face"
-                        style={{
-                           transform: `translateZ(${14 - i * 5}px)`,
-                           opacity: 0.95,
-                        }}
-                     />
-                  ))}
-               </div>
-               <div className="cover-back book-face" />
-               <div className="spine book-face" />
-               <div className="page-edge-right book-face" />
-               <div className="page-edge-top book-face" />
-               <div className="page-edge-bottom book-face" />
-               <div className="cover-front book-face">
-                  <div className="cover-title">
+               <div className="book__face book__back" aria-hidden />
+               <div className="book__face book__spine" aria-hidden />
+               <div className="book__face book__fore" aria-hidden />
+               <div className="book__face book__head" aria-hidden />
+               <div className="book__face book__tail" aria-hidden />
+               <div className="book__face book__front" aria-hidden>
+                  <div className="book__title-frame" />
+                  <div className="book__title">
                      <div className="sub">A Personal Volume</div>
                      <div className="rule" />
-                     <div className="name">COLE&nbsp;MILNE</div>
-                     <div className="rule" />
-                     <div className="sub">Selected Works &amp; Notes</div>
-                     <div className="crest" aria-hidden>
-                        ❦
+                     <div className="name">
+                        COLE
+                        <br />
+                        MILNE
                      </div>
+                     <div className="rule" />
+                     <div className="sub">Works &amp; Notes</div>
+                     <div className="crest">❦</div>
                   </div>
                </div>
             </button>
@@ -134,7 +124,7 @@ function OpenSpread({onClose}: {onClose: () => void}) {
    }, []);
 
    return (
-      <div className="min-h-screen flex flex-col justify-center py-10">
+      <div className="open-stage">
          <button
             ref={closeRef}
             className="close-book"
@@ -147,89 +137,103 @@ function OpenSpread({onClose}: {onClose: () => void}) {
             ✕ Close the book
          </button>
 
-         <div className="spread parchment" role="region" aria-label="Table of contents">
-            <div className="parchment-fibers" style={{position: 'absolute', inset: 0, pointerEvents: 'none'}} />
-            <div className="ribbon" aria-hidden />
+         <div className="open-book">
+            <div
+               className="spread"
+               role="region"
+               aria-label="Table of contents"
+            >
+               <div className="ribbon" aria-hidden />
 
-            {/* LEFT PAGE — bio / frontispiece */}
-            <article className="page page-left parchment" aria-label="About">
-               <div className="chapter-eyebrow">Frontispiece</div>
-               <h1 className="chapter-title">{data.name}</h1>
-               <div className="chapter-rule" />
-
-               <div className="prose-book">
-                  {data.bio.map((para, idx) => (
-                     <p key={idx}>{para}</p>
-                  ))}
-               </div>
-
-               <div className="author-card">
-                  <div className="avatar">
-                     <Image
-                        unoptimized
-                        alt={data.alt}
-                        src={data.avatar}
-                        width={72}
-                        height={72}
-                        priority
-                     />
+               {/* LEFT PAGE — frontispiece / about */}
+               <article className="page page-left paper" aria-label="About">
+                  <div className="running-head">
+                     <span>Cole Milne</span>
+                     <span>Frontispiece</span>
                   </div>
-                  <div className="meta">
-                     <strong>{data.role}</strong>
-                     <br />
-                     {data.location} · open to contract &amp; full-time
-                     <br />
-                     <a href={`mailto:${data.email}`} style={{color: 'var(--leather)'}}>
-                        {data.email}
-                     </a>
+
+                  <div className="chapter-eyebrow">In which we begin</div>
+                  <h1 className="chapter-title">{data.name}</h1>
+                  <div className="chapter-rule" />
+
+                  <div className="prose-book">
+                     {data.bio.map((para, idx) => (
+                        <p key={idx}>{para}</p>
+                     ))}
                   </div>
-               </div>
 
-               <div className="section-heading">Areas of practice</div>
-               <div className="skills-list" aria-label="Skills">
-                  {data.skills.map((s) => (
-                     <span key={s}>{s}</span>
-                  ))}
-               </div>
+                  <div className="author-card">
+                     <div className="avatar">
+                        <Image
+                           unoptimized
+                           alt={data.alt}
+                           src={data.avatar}
+                           width={70}
+                           height={70}
+                           priority
+                        />
+                     </div>
+                     <div className="meta">
+                        <strong>{data.role}</strong>
+                        <br />
+                        {data.location} · open to contract &amp; full-time
+                        <br />
+                        <a
+                           href={`mailto:${data.email}`}
+                           style={{color: 'var(--leather)'}}
+                        >
+                           {data.email}
+                        </a>
+                     </div>
+                  </div>
 
-               <div className="page-number">i</div>
-            </article>
+                  <div className="section-heading">Areas of practice</div>
+                  <div className="skills-list" aria-label="Skills">
+                     {data.skills.map((s) => (
+                        <span key={s}>{s}</span>
+                     ))}
+                  </div>
 
-            {/* RIGHT PAGE — table of contents */}
-            <article className="page page-right parchment" aria-label="Table of contents">
-               <div className="chapter-eyebrow">Volume I</div>
-               <h2 className="chapter-title">Table of Contents</h2>
-               <div className="chapter-rule" />
+                  <p className="epigraph">
+                     “The best way to predict the future is to build it —
+                     preferably by hand, preferably twice.”
+                  </p>
 
-               <div className="section-heading">Where to find me</div>
-               <TocList items={data.links} startPage={3} />
+                  <div className="folio">i</div>
+               </article>
 
-               <div className="section-heading">Selected Projects</div>
-               <TocList
-                  items={data.projects.map((p) => ({
-                     ...p,
-                     icon: '',
-                     external: true,
-                  }))}
-                  startPage={3 + data.links.length}
-                  compact
-               />
-
-               <p
-                  style={{
-                     marginTop: 22,
-                     fontStyle: 'italic',
-                     color: 'var(--ink-soft)',
-                     fontSize: 13,
-                     lineHeight: 1.6,
-                  }}
+               {/* RIGHT PAGE — table of contents */}
+               <article
+                  className="page page-right paper"
+                  aria-label="Table of contents"
                >
-                  Many of my professional engagements are under NDA. I'm happy to
-                  walk through relevant work in detail during a conversation.
-               </p>
+                  <div className="running-head">
+                     <span>Contents</span>
+                     <span>Volume I</span>
+                  </div>
 
-               <div className="page-number">ii</div>
-            </article>
+                  <div className="chapter-eyebrow">Volume I</div>
+                  <h2 className="chapter-title">Table of Contents</h2>
+                  <div className="chapter-rule" />
+
+                  <div className="section-heading">Where to find me</div>
+                  <TocList items={data.links} startPage={3} />
+
+                  <div className="section-heading">Selected Projects</div>
+                  <ProjectList
+                     items={data.projects}
+                     startPage={3 + data.links.length}
+                  />
+
+                  <p className="note-italic">
+                     Many of my professional engagements are under NDA. I'm happy
+                     to walk through relevant work in detail during a conversation.
+                  </p>
+
+                  <div className="folio">ii</div>
+               </article>
+            </div>
+            <div className="open-book__drop" aria-hidden />
          </div>
       </div>
    );
@@ -238,7 +242,6 @@ function OpenSpread({onClose}: {onClose: () => void}) {
 function TocList({
    items,
    startPage,
-   compact = false,
 }: {
    items: Array<{
       title: string;
@@ -248,34 +251,31 @@ function TocList({
       external?: boolean;
    }>;
    startPage: number;
-   compact?: boolean;
 }) {
    return (
       <ul className="toc">
          {items.map((item, idx) => {
             const pageNo = startPage + idx;
-            const isExternal = item.external !== false && /^https?:/i.test(item.href);
+            const isExternal =
+               item.external !== false && /^https?:/i.test(item.href);
             const inner = (
                <>
-                  <span className="toc-title">
-                     {item.icon ? (
-                        <Icon
-                           icon={item.icon}
-                           width={18}
-                           height={18}
-                           aria-hidden
-                        />
-                     ) : null}
-                     {item.title}
-                     {isExternal ? <span className="ext-mark"> ↗</span> : null}
-                     {!compact && item.subtitle ? (
-                        <span className="toc-sub">{item.subtitle}</span>
-                     ) : null}
+                  <span className="toc-row">
+                     <span className="toc-label">
+                        {item.icon ? (
+                           <Icon icon={item.icon} width={17} height={17} aria-hidden />
+                        ) : null}
+                        <span>
+                           {item.title}
+                           {isExternal ? <span className="ext-mark"> ↗</span> : null}
+                        </span>
+                     </span>
+                     <span className="leader" aria-hidden />
+                     <span className="page-no">{String(pageNo).padStart(2, '0')}</span>
                   </span>
-                  <span className="page-no">
-                     <span className="dots">· · · · · · · </span>
-                     {String(pageNo).padStart(2, '0')}
-                  </span>
+                  {item.subtitle ? (
+                     <span className="toc-sub">{item.subtitle}</span>
+                  ) : null}
                </>
             );
             return (
@@ -294,11 +294,34 @@ function TocList({
    );
 }
 
+function ProjectList({
+   items,
+   startPage,
+}: {
+   items: Array<{title: string; href: string}>;
+   startPage: number;
+}) {
+   return (
+      <ul className="toc-grid">
+         {items.map((item, idx) => (
+            <li key={item.href}>
+               <a href={item.href} target="_blank" rel="noopener noreferrer">
+                  <span className="pno">{String(startPage + idx).padStart(2, '0')}</span>
+                  <span>
+                     {item.title}
+                     <span className="ext-mark"> ↗</span>
+                  </span>
+               </a>
+            </li>
+         ))}
+      </ul>
+   );
+}
+
 export default function Home() {
    const [opened, setOpened] = useState(false);
 
    useEffect(() => {
-      // If the user lands with a hash like #contents, open straight in
       if (typeof window !== 'undefined' && window.location.hash === '#contents') {
          setOpened(true);
       }
@@ -308,14 +331,13 @@ export default function Home() {
       <>
          <div className="table-surface" aria-hidden />
 
-         {/* Visible UI — 3D book or open spread */}
          {opened ? (
             <OpenSpread onClose={() => setOpened(false)} />
          ) : (
             <ClosedBook onOpen={() => setOpened(true)} />
          )}
 
-         {/* SEO content: always rendered, hidden from sighted users while
+         {/* SEO content: always in the DOM, hidden from sighted users while
              the book is closed but read by crawlers and screen readers. */}
          <div className="sr-only">
             <h1>{data.name}</h1>

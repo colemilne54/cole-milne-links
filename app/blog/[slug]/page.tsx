@@ -58,11 +58,16 @@ export default function BlogPost({params}: {params: Params}) {
       <>
          <div className="table-surface" aria-hidden />
 
-         <article className="single-page parchment">
-            <div className="parchment-fibers" style={{position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: 4}} />
+         <div className="single-stage">
+         <article className="single-page paper">
             <Link href="/blog" className="back-link">
                ← Back to the Library
             </Link>
+
+            <div className="running-head">
+               <span>The Library</span>
+               <span>Cole Milne</span>
+            </div>
 
             <header style={{marginBottom: 24}}>
                <div
@@ -119,16 +124,11 @@ export default function BlogPost({params}: {params: Params}) {
                </Link>
             </footer>
 
-            <div
-               style={{
-                  marginTop: 28,
-                  textAlign: 'center',
-                  color: 'var(--ink-soft)',
-                  fontSize: 16,
-               }}
-               aria-hidden
-            >
+            <div className="endmark" aria-hidden>
                ❦
+            </div>
+            <div className="folio" style={{left: '50%', transform: 'translateX(-50%)'}}>
+               {post.title}
             </div>
 
             <script
@@ -136,6 +136,7 @@ export default function BlogPost({params}: {params: Params}) {
                dangerouslySetInnerHTML={{__html: JSON.stringify(articleJsonLd)}}
             />
          </article>
+         </div>
       </>
    );
 }
